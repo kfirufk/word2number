@@ -5,6 +5,19 @@ import (
 	"testing"
 )
 
+func TestMyTest(t *testing.T) {
+	c, err := NewConverter("en")
+	if err != nil {
+		t.Fatal(err)
+	}
+	words := "one and a half"
+	t.Run(fmt.Sprint("testcase Float"), func(t *testing.T) {
+		if got := c.Words2Number(words); got != 1.5 {
+			t.Errorf("Converter.Words2Number(%s) = %v, want %v", words, got, 1.5)
+		}
+	})
+}
+
 func TestConvert_sv(t *testing.T) {
 	c, err := NewConverter("sv")
 	if err != nil {

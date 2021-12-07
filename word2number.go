@@ -8,7 +8,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/donna-legal/word2number/resources"
+	"github.com/kfirufk/word2number/resources"
 )
 
 //go:generate go-bindata -pkg resources -o resources/resources.go -ignore=.*\.go resources
@@ -23,6 +23,7 @@ type Converter struct {
 	decimals     []decimalType
 	digitPattern *regexp.Regexp
 	words        map[int]string
+	floatWords   map[string]float64
 }
 type decimalType struct {
 	pattern *regexp.Regexp
@@ -46,7 +47,12 @@ func NewConverter(locale string) (*Converter, error) {
 		pattern := regexp.MustCompile(fmt.Sprintf(`(?i)\b%s\b`, m["word"]))
 		c.decimals = append(c.decimals, decimalType{pattern, m["weak"] == "true"})
 	}
+	c.floatWords = make(map[string]float64)
+	for _, counter := range resources.ArrayMap(locale, "float") {
+		c.addToFloats(counter)
+	}
 	c.words = make(map[int]string)
+
 	for _, counter := range resources.ArrayMap(locale, "counters") {
 		c.addToWords(counter)
 		ct := newCounterType(counter)
@@ -91,6 +97,14 @@ func (c *Converter) addToWords(m map[string]string) {
 		panic(err)
 	}
 	c.words[i] = m["word"]
+}
+
+func (c *Converter) addToFloats(m map[string]string) {
+	i, err := strconv.ParseFloat(m["number"], 64)
+	if err != nil {
+		panic(err)
+	}
+	c.floatWords[m["word"]] = i
 }
 
 // Number2Words takes a number and returns the words for the given number
@@ -170,6 +184,11 @@ func (c *Converter) findMatches(words string) matches {
 		n, _ := strconv.ParseFloat(d, 64) // TODO: handle this potential error
 		ms = append(ms, newMatch(countKey, m, words, n, true))
 	}
+	for word, num := range c.floatWords {
+		if idx := strings.Index(words, word); idx > -1 {
+			ms = append(ms, newMatch(floatKey, []int{idx, idx + len(word)}, words, num, false))
+		}
+	}
 	for _, count := range c.counters {
 		for _, m := range count.pattern.FindAllStringIndex(words, -1) {
 			ms = append(ms, newMatch(countKey, m, words, count.value, true))
@@ -206,6 +225,8 @@ func getValues(vals matches) (out float64) {
 	var sums []float64
 	for _, m := range vals {
 		switch m.tyype {
+		case floatKey:
+			sums = append([]float64{m.numeric}, sums...)
 		case countKey:
 			sums = append([]float64{m.numeric}, sums...)
 		case multiKey:
