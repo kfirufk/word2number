@@ -177,6 +177,66 @@ func (c *Converter) Words2Number(words string) float64 {
 	return (sum + decimals) / getPercent(ms)
 }
 
+func (c *Converter) Words2NumberArray(words string) []float64 {
+	ms := c.findMatches(words)
+	ms.removeOverlaps()
+	sort.Sort(ms)
+	curPos := 0
+	var result []float64
+	var curMatch matches
+	idx := 0
+	for curIdx, msItem := range ms {
+		curFor := false
+		if idx == 0 || msItem.start <= curPos+1 {
+			curMatch = append(curMatch, msItem)
+			curPos = msItem.end
+			idx++
+			curFor = true
+		}
+		if !curFor || (curIdx+1 == len(ms) && len(curMatch) > 0) {
+			before, after := curMatch.splitOn()
+			sum := getValues(before)
+			decimals := getDecimals(after)
+			result = append(result, (sum+decimals)/getPercent(ms))
+			curMatch = curMatch[:0]
+			idx = 0
+		}
+	}
+	return result
+}
+
+func (c *Converter) ReplaceNumbersInWordForm(words string) string {
+	ms := c.findMatches(words)
+	ms.removeOverlaps()
+	sort.Sort(ms)
+	curPos := 0
+	var curMatch matches
+	idx := 0
+	retWords := words
+	var curStr []string
+	for curIdx, msItem := range ms {
+		curFor := false
+		if idx == 0 || msItem.start <= curPos+1 {
+			curStr = append(curStr, msItem.value)
+			curMatch = append(curMatch, msItem)
+			curPos = msItem.end
+			idx++
+			curFor = true
+		}
+		if !curFor || (curIdx+1 == len(ms) && len(curMatch) > 0) {
+			before, after := curMatch.splitOn()
+			sum := getValues(before)
+			decimals := getDecimals(after)
+			resNumber := (sum + decimals) / getPercent(ms)
+			retWords = strings.Replace(retWords, strings.Join(curStr, " "), fmt.Sprintf("%v", resNumber), 1)
+			curStr = curStr[:0]
+			curMatch = curMatch[:0]
+			idx = 0
+		}
+	}
+	return retWords
+}
+
 func (c *Converter) findMatches(words string) matches {
 	var ms matches
 	for _, m := range c.digitPattern.FindAllStringIndex(words, -1) {
