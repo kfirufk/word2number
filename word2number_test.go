@@ -2,10 +2,11 @@ package word2number
 
 import (
 	"fmt"
+	"reflect"
 	"testing"
 )
 
-func TestMyTest(t *testing.T) {
+func TestFloat(t *testing.T) {
 	c, err := NewConverter("en")
 	if err != nil {
 		t.Fatal(err)
@@ -14,6 +15,47 @@ func TestMyTest(t *testing.T) {
 	t.Run(fmt.Sprint("testcase Float"), func(t *testing.T) {
 		if got := c.Words2Number(words); got != 1.5 {
 			t.Errorf("Converter.Words2Number(%s) = %v, want %v", words, got, 1.5)
+		}
+	})
+}
+
+func TestFloat2(t *testing.T) {
+	c, err := NewConverter("en")
+	if err != nil {
+		t.Fatal(err)
+	}
+	words := "one point 5"
+	t.Run(fmt.Sprint("testcase Float"), func(t *testing.T) {
+		if got := c.Words2Number(words); got != 1.5 {
+			t.Errorf("Converter.Words2Number(%s) = %v, want %v", words, got, 1.5)
+		}
+	})
+}
+
+func TestWordsToNumberArray(t *testing.T) {
+	c, err := NewConverter("en")
+	if err != nil {
+		t.Fatal(err)
+	}
+	words := "take one glass and pour one and a half cups of sugar in it"
+	shouldGet := []float64{1, 1.5}
+	t.Run(fmt.Sprint("testcase String Convert"), func(t *testing.T) {
+		if got := c.Words2NumberArray(words); !reflect.DeepEqual(got, shouldGet) {
+			t.Errorf("Converter.Words2NumberArray(%s) = %v, want %v", words, got, shouldGet)
+		}
+	})
+}
+
+func TestConvertNumbersInFullString(t *testing.T) {
+	c, err := NewConverter("en")
+	if err != nil {
+		t.Fatal(err)
+	}
+	words := "take one glass and pour one and a half cups of sugar in it"
+	shouldGet := "take 1 glass and pour 1.5 cups of sugar in it"
+	t.Run(fmt.Sprint("testcase String Convert"), func(t *testing.T) {
+		if got := c.ReplaceNumbersInWordForm(words); got != shouldGet {
+			t.Errorf("Converter.ReplaceNumbersInWordForm(%s) = %v, want %v", words, got, shouldGet)
 		}
 	})
 }
