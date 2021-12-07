@@ -48,11 +48,11 @@ func main() {
     f = converter.Words2Number("one-million two hundred thousand")
     fmt.Println(f) // should return 1200000
 	s = converter.ReplaceNumbersInWordForm("take one glass and pour one and a half cups of sugar in it")
-	// should return "take 1 glass and pour 1.5 cups of sugar in it"
+	fmt.Println(s) // should return "take 1 glass and pour 1.5 cups of sugar in it"
 	fa = converter.Words2NumberArray("take one glass and pour one and a half cups of sugar in it")
-	// should return []float64{1,1.5}
+	fmt.Println(fa) // {1,1.5}
 	f = converter.Words2Number("take one glass and pour one and a half cups of sugar in it")
-	// this should return 2.5 since it sums 1 and 1.5
+	fmt.Println(f) // this should return 2.5 since it sums 1 and 1.5
 
 }
 ```
