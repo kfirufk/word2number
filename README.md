@@ -17,7 +17,7 @@ it will provide an array of []float64{1,1.5} instead of summing it to two.
 
 Go get the package:
 
-`go get https://github.com/kfirufk/word2number`
+`go get github.com/kfirufk/word2number`
 
 and add it as an import:
 
