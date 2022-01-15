@@ -216,6 +216,9 @@ func (c *Converter) ReplaceNumbersInWordForm(words string) string {
 	var curStr []string
 	for curIdx, msItem := range ms {
 		curFor := false
+		if idx == 0 && msItem.tyype == 5 {
+			continue
+		}
 		if idx == 0 || msItem.start <= curPos+1 {
 			curStr = append(curStr, msItem.value)
 			curMatch = append(curMatch, msItem)
