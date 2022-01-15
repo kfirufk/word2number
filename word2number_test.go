@@ -60,6 +60,48 @@ func TestConvertNumbersInFullString(t *testing.T) {
 	})
 }
 
+func TestConvertNumbersInFullString205(t *testing.T) {
+	c, err := NewConverter("en")
+	if err != nil {
+		t.Fatal(err)
+	}
+	words := "two hundred and five"
+	shouldGet := "205"
+	t.Run(fmt.Sprint("testcase String Convert"), func(t *testing.T) {
+		if got := c.ReplaceNumbersInWordForm(words); got != shouldGet {
+			t.Errorf("Converter.ReplaceNumbersInWordForm(%s) = %v, want %v", words, got, shouldGet)
+		}
+	})
+}
+
+func TestConvertNumbersInFullStringComplex(t *testing.T) {
+	c, err := NewConverter("en")
+	if err != nil {
+		t.Fatal(err)
+	}
+	words := "with two hundred and five bottles you and I can make twenty two cakes"
+	shouldGet := "with 205 bottles you and I can make 22 cakes"
+	t.Run(fmt.Sprint("testcase String Convert"), func(t *testing.T) {
+		if got := c.ReplaceNumbersInWordForm(words); got != shouldGet {
+			t.Errorf("Converter.ReplaceNumbersInWordForm(%s) = %v, want %v", words, got, shouldGet)
+		}
+	})
+}
+
+func TestConvertNumbersInFullString2(t *testing.T) {
+	c, err := NewConverter("en")
+	if err != nil {
+		t.Fatal(err)
+	}
+	words := "Let cool, then pour into a glass jar and seal tightly with a lid."
+	shouldGet := words
+	t.Run(fmt.Sprint("testcase String Convert"), func(t *testing.T) {
+		if got := c.ReplaceNumbersInWordForm(words); got != shouldGet {
+			t.Errorf("Converter.ReplaceNumbersInWordForm(%s) = %v, want %v", words, got, shouldGet)
+		}
+	})
+}
+
 func TestConvert_sv(t *testing.T) {
 	c, err := NewConverter("sv")
 	if err != nil {
