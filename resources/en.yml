@@ -15,6 +15,10 @@ en:
       number: 0.5
     - word: 1/2
       number: 0.5
+    - word: 3/4
+      number: 0.75
+    - word: 1/4
+      number: 0.25
   counters:
     - word: zero
       number: 0
