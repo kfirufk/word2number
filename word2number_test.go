@@ -46,6 +46,20 @@ func TestWordsToNumberArray(t *testing.T) {
 	})
 }
 
+func TestConvertNumbersInFullString3(t *testing.T) {
+	c, err := NewConverter("en")
+	if err != nil {
+		t.Fatal(err)
+	}
+	words := "2 and 1/2 ounce of something and 1/4 ounce of something else"
+	shouldGet := "2.5 ounce of something and 0.25 ounce of something else"
+	t.Run(fmt.Sprint("testcase String Convert"), func(t *testing.T) {
+		if got := c.ReplaceNumbersInWordForm(words); got != shouldGet {
+			t.Errorf("Converter.ReplaceNumbersInWordForm(%s) = %v, want %v", words, got, shouldGet)
+		}
+	})
+}
+
 func TestConvertNumbersInFullString(t *testing.T) {
 	c, err := NewConverter("en")
 	if err != nil {
